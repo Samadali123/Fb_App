@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social media : my profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+
+    <div class="container w-screen h-screen relative py-8">
+
+        <a class="px-4 py-1 text-xl font-medium rounded-3xl ml-10" href="/feedpage" style="background-color: royalblue; color:white; ">Home</a>
+
+        <div class="content w-full h-full flex  flex-col  items-center py-5">
+            <h3 class="text-2xl  font-medium  " style="color: royalblue;">my profile </h3>
+
+            <div class="profile-area mt-8 relative ">
+                <div class="profile w-[80px] h-[80px]  rounded-full overflow-hidden" style="border: 1px solid royalblue;">
+                    <img class="h-full w-full object-cover rounded-full" src="/images/uploads/<%= user.profile  %>  " alt="">
+                </div>
+
+            </div>
+
+            <div class="userdets text-center">
+                <h3 class=" font-semibold mb-3">
+                    <%= user.username %>
+                </h3>
+
+                <a class="" href="/editprofile"> <span class="px-2 py-1 " style="background-color: royalblue; color:white; border-radius :50px;">edit profile</span></a>
+
+                <a href="/editprofile" class=" cursor-pointer">
+                    <p class="mt-2">
+                        <%= user.bio ?? `Add a bio` %>
+                    </p>
+                </a>
+
+                <div class="dets flex gap-6 mt-3 ml-10">
+                    <div class="posts leading-1">
+                        <span class="font-semibold"> <%= user.posts.length %></span>
+                        <p>Posts</p>
+                    </div>
+
+
+                    <div class="followers leading-1">
+                        <span class="font-semibold"><%= user.followers.length %></span>
+                        <a href="/myfollowers/<%= user._id %>">
+                            <p>Followers</p>
+                        </a>
+                    </div>
+
+
+                    <div class="following leading-1">
+                        <span class="font-semibold"><%= user.following.length %></span>
+                        <a href="/myfollowing/<%= user._id %>">
+                            <p>following</p>
+                        </a>
+                    </div>
+
+
+                </div>
+
+                <div class="addposts flex gap-8 mt-3  ml-[26%]">
+                    <h3>Make posts</h3>
+                    <i id="addpost" class="ri-add-line text-[royalblue] font-semibold text-lg "></i>
+                </div>
+
+                <div class="posts-section ">
+                    <div class="postform">
+
+                        <form id="postform" action="/postupload" method="post" enctype="multipart/form-data">
+
+                            <input hidden id="postfile" type="file" name="image">
+
+                            <div class="create mt-6">
+                                <input name="caption" class=" px-4 py-1 rounded-2xl" type="text" placeholder="Add a caption " style="outline: none; border :1px solid black; ">
+                                <button id="postbtn" class="rounded-2xl px-2 py-1  text-sm ml-2 " style="background-color: royalblue; color:white;">create post</button>
+                            </div>
+
+
+                        </form>
+
+
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <style>
+        .profile {
+            cursor: pointer;
+        }
+    </style>
+
+
+    <script>
+        document.querySelector("#addpost").addEventListener("click", function() {
+            document.querySelector("#postfile").click();
+            document.querySelector("#postfile").addEventListener("change", function(dets) {
+
+                document.querySelector("#postbtn").addEventListener("click", function() {
+                    document.querySelector("#postform").submit();
+
+                })
+            })
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.7.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="topdets d-flex gap-3 align-items-center mx-5 my-4">
+        <a href="/profile" class="text-decoration-none fs-4"><i class="ri-arrow-left-line"></i></a>
+        <h3 class="fs-4 fw-semibold">
+            <%= userfollowers.username %>
+        </h3>
+    </div>
+
+    <div class="allfollowers  py-2">
+        <h3 id="followers" class="my-2" style="margin-left: 55px;">
+            <% if(userfollowers.followers.length >0){ %>
+                Followers
+                <span class="fs-4 mx-2">
+            <%= userfollowers.followers.length %></span>
+                <% }  else{  %>
+                    <span class="fs-4 mx-2">
+             Don"t have any followers.</span>
+                    <% }  %>
+        </h3>
+
+        <% userfollowers.followers.forEach(function(follower){ %>
+
+            <div class="onefollower d-flex  align-items-center  gap-5 mx-5 my-3 col-3 justify-content-between px-1">
+                <div class="left d-flex gap-2 ">
+                    <div class="followerprofile" style="width: 55px; height:55px; background-color:royalblue; border-radius:50%; overflow:hidden; ">
+                        <img src="/images/uploads/<%= follower.profile %>" alt="" style="width: 100%; height:100%; object-fit:cover; ">
+                    </div>
+
+                    <div class="followername " style="white-space: nowrap;">
+                        <a href="/profile/<%= follower.username %>" class="text-decoration-none text-dark ">
+                            <p>
+                                <span><%= follower.username %></span> <br>
+                                <%= follower.fullname %>
+                            </p>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="button mb-3">
+
+
+                    <% if(follower.followers.indexOf(loginuser._id) === -1){ %>
+                        <a href="/follow/<%= follower._id %>" class="text-decoration-none bg-primary text-white  px-3 py-1 " style="border-radius: 5px;">Follow</a>
+                        <%   }  else{  %>
+                            <a href="/follow/<%= follower._id %>" class="text-decoration-none bg-primary text-white  px-3 py-1 " style="border-radius: 5px;">Following</a>
+                            <%  }  %>
+
+                </div>
+            </div>
+            <%  })  %>
+
+    </div>
+
+
+
+
+    <style>
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>
