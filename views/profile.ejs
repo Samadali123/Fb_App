@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social media : my profile</title>
+    <title>Fb | my profile</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -73,10 +73,10 @@
 
                         <form id="postform" action="/postupload" method="post" enctype="multipart/form-data">
 
-                            <input hidden id="postfile" type="file" name="image">
+                            <input required hidden id="postfile" type="file" name="image">
 
                             <div class="create mt-6">
-                                <input name="caption" class=" px-4 py-1 rounded-2xl" type="text" placeholder="Add a caption " style="outline: none; border :1px solid black; ">
+                                <input required name="caption" class=" px-4 py-1 rounded-2xl" type="text" placeholder="Add a caption " style="outline: none; border :1px solid black; ">
                                 <button id="postbtn" class="rounded-2xl px-2 py-1  text-sm ml-2 " style="background-color: royalblue; color:white;">create post</button>
                             </div>
 

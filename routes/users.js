@@ -8,7 +8,10 @@ const userSchema = mongoose.Schema({
     username: String,
     email: String,
     password: String,
-    profile: String,
+    profile: {
+        type: String,
+        default: "default.jpg"
+    },
     bio: String,
     fullname: String,
     posts: [{

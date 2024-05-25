@@ -9,8 +9,12 @@ const upload = require('./multer');
 passport.use(new localStrategy(userModel.authenticate()));
 
 router.get('/', function(req, res, next) {
-    const error = req.flash('error');
-    res.render('index', { error });
+    try {
+        const error = req.flash('error');
+        res.render('index', { error });
+    } catch (error) {
+        res.status(401).json({ success: false, message: "Invalid Request" })
+    }
 });
 
 router.post('/register', async(req, res) => {
@@ -50,10 +54,14 @@ router.post('/login', passport.authenticate('local', {
 }), function(req, res, next) {});
 
 router.get('/logout', function(req, res, next) {
-    req.logout(function(err) {
-        if (err) { return next(err); }
-        res.redirect('/');
-    });
+    try {
+        req.logout(function(err) {
+            if (err) { return next(err); }
+            res.redirect('/');
+        });
+    } catch (error) {
+        res.status(401).json({ success: fasle, message: "Something went wrong" })
+    }
 });
 
 
@@ -69,157 +77,223 @@ function isLoggedIn(req, res, next) {
 
 
 router.get('/profile', isLoggedIn, async function(req, res, next) {
-    let user = await userModel.findOne({ username: req.session.passport.user }).populate('posts');
-    res.render('profile', { user });
+    try {
+        let user = await userModel.findOne({ username: req.session.passport.user }).populate('posts');
+        res.render('profile', { user });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.post('/upload', isLoggedIn, upload.single('image'), async function(req, res, next) {
-    const user = await userModel.findOne({ username: req.session.passport.user });
-    user.profile = req.file.filename;
-    await user.save();
-    res.redirect('/profile');
+    try {
+        const user = await userModel.findOne({ username: req.session.passport.user });
+        user.profile = req.file.filename;
+        await user.save();
+        res.redirect('/feedpage');
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.post('/postupload', isLoggedIn, upload.single('image'), async(req, res) => {
-    const user = await userModel.findOne({ username: req.session.passport.user });
-    const post = await postsModel.create({
-        postdata: req.body.caption,
-        postimage: req.file.filename,
-        user: user._id,
-    });
-    res.redirect('/profile');
+    try {
+        const user = await userModel.findOne({ username: req.session.passport.user });
+        const post = await postsModel.create({
+            postdata: req.body.caption,
+            postimage: req.file.filename,
+            user: user._id,
+        });
+        res.redirect('/homepage');
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.get('/feedpage', isLoggedIn, async(req, res) => {
-    let allposts = await postsModel.find().populate('user');
-    const userloggedin = await userModel.findOne({ username: req.session.passport.user });
-    res.render('feed', { userloggedin, allposts });
+    try {
+        let allposts = await postsModel.find().populate('user');
+        const userloggedin = await userModel.findOne({ username: req.session.passport.user });
+        res.render('feed', { userloggedin, allposts });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.get('/homepage', function(req, res) {
-    res.redirect('/feedpage');
+    try {
+        res.redirect('/feedpage');
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.get('/profile/:open', async function(req, res) {
-    const openprofile = await userModel.findOne({ username: req.params.open }).populate('posts');
-    const loginuser = await userModel.findOne({ username: req.session.passport.user });
-    res.render('openprofile', { openprofile, loginuser });
+    try {
+        const openprofile = await userModel.findOne({ username: req.params.open }).populate('posts');
+        const loginuser = await userModel.findOne({ username: req.session.passport.user });
+        res.render('openprofile', { openprofile, loginuser });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.post('/uploadprofile', isLoggedIn, upload.single('picture'), async function(req, res, next) {
-    const user = await userModel.findOne({ username: req.session.passport.user });
-    user.profile = req.file.filename;
-    await user.save();
-    res.redirect('/editprofile');
+    try {
+        const user = await userModel.findOne({ username: req.session.passport.user });
+        user.profile = req.file.filename;
+        await user.save();
+        res.redirect('/editprofile');
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.get('/editprofile', isLoggedIn, async(req, res) => {
-    const edituser = await userModel.findOne({ username: req.session.passport.user });
-    res.render('editprofile', { edituser });
+    try {
+        const edituser = await userModel.findOne({ username: req.session.passport.user });
+        res.render('editprofile', { edituser });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.post('/saveprofile/:edituser', isLoggedIn, async(req, res) => {
-    const user = await userModel.findOne({ username: req.params.edituser }).populate('posts');
-    user.username = req.body.newname;
-    user.bio = req.body.bio;
-    await user.save();
-    res.redirect('/profile');
+    try {
+        const user = await userModel.findOne({ username: req.params.edituser }).populate('posts');
+        user.username = req.body.newname;
+        user.bio = req.body.bio;
+        await user.save();
+        res.redirect('/profile');
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.get('/open/profile/:username', isLoggedIn, function(req, res, next) {
-    res.redirect('/profile');
+    try {
+        res.redirect('/profile');
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.get('/like/:post', isLoggedIn, async function(req, res) {
-    let loginuser = await userModel.findOne({ username: req.session.passport.user });
-    let postoliked = await postsModel.findOne({ _id: req.params.post });
+    try {
+        let loginuser = await userModel.findOne({ username: req.session.passport.user });
+        let postoliked = await postsModel.findOne({ _id: req.params.post });
 
-    // if already liked remove liked and if not liked liked
-    if (postoliked.likes.indexOf(loginuser._id) === -1) {
-        postoliked.likes.push(loginuser._id);
-    } else {
-        postoliked.likes.splice(postoliked.likes.indexOf(loginuser._id), 1);
+        // if already liked remove liked and if not liked liked
+        if (postoliked.likes.indexOf(loginuser._id) === -1) {
+            postoliked.likes.push(loginuser._id);
+        } else {
+            postoliked.likes.splice(postoliked.likes.indexOf(loginuser._id), 1);
+        }
+
+        await postoliked.save();
+        res.redirect('/homepage');
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
     }
-
-    await postoliked.save();
-    res.redirect('/homepage');
 });
 
 router.get('/follow/:followeruser', isLoggedIn, async function(req, res, next) {
-    const followeduser = await userModel.findById(req.params.followeruser);
-    const followinguser = await userModel.findOne({ username: req.session.passport.user });
+    try {
+        const followeduser = await userModel.findById(req.params.followeruser);
+        const followinguser = await userModel.findOne({ username: req.session.passport.user });
 
-    if (followeduser.followers.indexOf(followinguser._id) === -1) {
-        followeduser.followers.push(followinguser._id);
-    } else {
-        followeduser.followers.splice(followinguser.followers.indexOf(followinguser._id), 1);
+        if (followeduser.followers.indexOf(followinguser._id) === -1) {
+            followeduser.followers.push(followinguser._id);
+        } else {
+            followeduser.followers.splice(followinguser.followers.indexOf(followinguser._id), 1);
+        }
+
+        if (followinguser.following.indexOf(followeduser._id) === -1) {
+            followinguser.following.push(followeduser._id);
+        } else {
+            followinguser.following.splice(followeduser.following.indexOf(followeduser._id), 1);
+        }
+
+        await followeduser.save();
+        await followinguser.save();
+        res.redirect('/homepage');
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
     }
-
-    if (followinguser.following.indexOf(followeduser._id) === -1) {
-        followinguser.following.push(followeduser._id);
-    } else {
-        followinguser.following.splice(followeduser.following.indexOf(followeduser._id), 1);
-    }
-
-    await followeduser.save();
-    await followinguser.save();
-    res.redirect('/homepage');
 });
 
 router.get('/myfollowers/:openuser', isLoggedIn, async function(req, res, next) {
-    const userfollowers = await userModel.findById(req.params.openuser).populate('followers');
-    const totalfollowers = await userModel.find({ _id: userfollowers });
-    const loginuser = await userModel.findOne({ username: req.session.passport.user });
-    res.render('followers', { userfollowers, totalfollowers, loginuser });
+    try {
+        const userfollowers = await userModel.findById(req.params.openuser).populate('followers');
+        const totalfollowers = await userModel.find({ _id: userfollowers });
+        const loginuser = await userModel.findOne({ username: req.session.passport.user });
+        res.render('followers', { userfollowers, totalfollowers, loginuser });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.get('/myfollowing/:openuser', isLoggedIn, async function(req, res, next) {
-    const userfollowing = await userModel.findById(req.params.openuser).populate('following');
-    const loginuser = await userModel.findOne({ username: req.session.passport.user });
-    res.render('following', { userfollowing, loginuser });
+    try {
+        const userfollowing = await userModel.findById(req.params.openuser).populate('following');
+        const loginuser = await userModel.findOne({ username: req.session.passport.user });
+        res.render('following', { userfollowing, loginuser });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.get('/save/:postid', isLoggedIn, async(req, res) => {
-    const user = await userModel.findOne({ username: req.session.passport.user });
-    const post = await postsModel.findById(req.params.postid);
+    try {
+        const user = await userModel.findOne({ username: req.session.passport.user });
+        const post = await postsModel.findById(req.params.postid);
 
-    // Check if the pin is not already saved by the user
-    if (!user.savedposts.includes(post._id)) {
-        // Add the pin to the user's savedPins array
-        user.savedposts.push(post._id);
+        // Check if the pin is not already saved by the user
+        if (!user.savedposts.includes(post._id)) {
+            // Add the pin to the user's savedPins array
+            user.savedposts.push(post._id);
 
-        // Check if the user is not already in the savedByUsers array of the pin
-        if (!post.savedby.includes(user._id)) {
-            // Add the user to the pin's savedByUsers array
-            post.savedby.push(user._id);
+            // Check if the user is not already in the savedByUsers array of the pin
+            if (!post.savedby.includes(user._id)) {
+                // Add the user to the pin's savedByUsers array
+                post.savedby.push(user._id);
+            }
         }
-    }
 
-    // Save changes
-    await user.save();
-    await post.save();
-    res.redirect('/homepage');
+        // Save changes
+        await user.save();
+        await post.save();
+        res.redirect('/homepage');
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 });
 
 router.get('/unsave/:postid', isLoggedIn, async(req, res) => {
-    const user = await userModel.findOne({ username: req.session.passport.user }).populate('savedposts');
-    const post = await postsModel.findById(req.params.postid).populate('savedby');
+    try {
+        const user = await userModel.findOne({ username: req.session.passport.user }).populate('savedposts');
+        const post = await postsModel.findById(req.params.postid).populate('savedby');
 
-    // Check if the post is saved by the user
-    if (user.savedposts.includes(post._id)) {
-        // Remove the post from the user's savedposts array
-        user.savedposts.pull(post._id);
+        // Check if the post is saved by the user
+        if (user.savedposts.includes(post._id)) {
+            // Remove the post from the user's savedposts array
+            user.savedposts.pull(post._id);
 
-        // Remove the user from the post's savedby array
-        post.savedby.pull(user._id);
+            // Remove the user from the post's savedby array
+            post.savedby.pull(user._id);
+        }
+
+        // Save changes
+        await user.save();
+        await post.save();
+
+        res.redirect('/homepage');
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error" })
     }
-
-    // Save changes
-    await user.save();
-    await post.save();
-
-    res.redirect('/homepage');
 });
+
+
 
 
 
