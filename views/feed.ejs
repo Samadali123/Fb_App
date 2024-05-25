@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fb | Feed</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <div class="head flex justify-between px-5 py-4 bg-white shadow-md">
+        <h1 class="text-xl font-semibold text-blue-600">Home Page</h1>
+        <div class="mydets flex items-center gap-4">
+            <a href="/logout" class="px-4 py-2 bg-blue-600 text-white rounded-full">Log Out</a>
+            <a id="profile" href="/open/profile/<%= userloggedin.username %> ">
+                <div class="profile w-10 h-10 rounded-full overflow-hidden">
+                    <img src="/images/uploads/<%= userloggedin.profile %>" alt="Profile Picture" class="w-full h-full object-cover">
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="allposts flex flex-wrap gap-6 p-6 justify-center">
+
+        <% allposts.reverse().forEach(function(post){ %>
+
+            <div class="card bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-sm">
+
+                <div class="userdets flex items-center justify-between p-4 border-b">
+                    <div class="left flex items-center gap-2">
+                        <img id="userprofile" src="/images/uploads/<%= post.user.profile %>" alt="User Profile" class="w-10 h-10 rounded-full">
+                        <a href="/profile/<%= post.user.username %>" class="text-dark no-underline text-gray-800">
+                            <%= post.user.username %>
+                        </a>
+                    </div>
+
+                    <% if(post.user.followers.indexOf(userloggedin._id) === -1){ %>
+                        <a href="/follow/<%= post.user._id %>" class="text-blue-600 no-underline">Follow</a>
+                        <% } else { %>
+                            <a href="/follow/<%= post.user._id %>" class="text-blue-600 no-underline">Following</a>
+                            <% } %>
+                </div>
+
+                <img src="/images/uploads/<%= post.postimage %>" class="w-full h-64 object-cover" alt="Post Image">
+
+                <div class="card-body p-4">
+                    <div class="like flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <p class="text-lg font-semibold">
+                                <%= post.likes.length %>
+                            </p>
+                            <% if(post.likes.indexOf(userloggedin._id) === -1){ %>
+                                <a href="/like/<%= post._id %>" class="text-blue-600 text-lg no-underline">Like</a>
+                                <% } else { %>
+                                    <a href="/like/<%= post._id %>" class="text-blue-600 text-lg no-underline">Unlike</a>
+                                    <% } %>
+                        </div>
+
+                        <% if(userloggedin.savedposts.indexOf(post._id) === -1){ %>
+                            <a href="/save/<%= post._id %>" class="text-blue-600 no-underline">Save</a>
+                            <% } else { %>
+                                <a href="/unsave/<%= post._id %>" class="text-blue-600 no-underline">Saved</a>
+                                <% } %>
+                    </div>
+                    <p class="text-gray-800 my-4">
+                        <%= post.postdata %>
+                    </p>
+                    <p class="text-gray-500 text-sm">
+                        <%= post.date.toDateString() %>
+                    </p>
+                </div>
+            </div>
+
+            <% }) %>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.2/dist/axios.min.js" integrity="sha256-VQ8m0Dd2xi0z6QuAKMa04ufRMBxv92nP+UWSqT33HGg=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FB | My Followings</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.7.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <div class="topdets flex items-center gap-3 mx-5 my-4">
+        <a href="/profile" class="text-blue-600 text-2xl"><i class="ri-arrow-left-line"></i></a>
+        <h3 class="text-2xl font-semibold">
+            <%= userfollowing.username %>
+        </h3>
+    </div>
+
+    <div class="allfollowers py-4">
+        <h3 id="followers" class="my-2 ml-14 text-xl font-semibold">
+            <% if(userfollowing.following.length > 0){ %>
+                Followings <span class="text-xl ml-2"><%= userfollowing.following.length %></span>
+                <% } else { %>
+                    <span class="text-xl ml-2">Don't have any followings.</span>
+                    <% } %>
+        </h3>
+
+        <div class="followings-list mx-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <% userfollowing.following.forEach(function(following){ %>
+                <div class="onefollowing flex items-center gap-5 p-4 bg-white rounded-lg shadow-md">
+                    <div class="left flex items-center gap-3">
+                        <div class="followingprofile w-14 h-14 bg-blue-600 rounded-full overflow-hidden">
+                            <img src="/images/uploads/<%= following.profile %>" alt="Profile Picture" class="w-full h-full object-cover">
+                        </div>
+                        <div class="followingname">
+                            <a href="/profile/<%= following.username %>" class="text-decoration-none text-gray-800">
+                                <p class="font-medium">
+                                    <span><%= following.username %></span><br>
+                                    <span class="text-gray-500"><%= following.fullname %></span>
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="button">
+                        <% if(following.followers.indexOf(loginuser._id) === -1){ %>
+                            <a href="/follow/<%= following._id %>" class="bg-blue-600 text-white px-4 py-2 rounded-full">Follow</a>
+                            <% } else { %>
+                                <a href="/follow/<%= following._id %>" class="bg-blue-600 text-white px-4 py-2 rounded-full">Following</a>
+                                <% } %>
+                    </div>
+                </div>
+                <% }) %>
+        </div>
+    </div>
+
+    <style>
+        body {
+            font-family: 'Gilroy', sans-serif;
+        }
+    </style>
+
+</body>
+
+</html>
