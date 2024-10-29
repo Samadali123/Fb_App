@@ -4,7 +4,8 @@ var userModel = require('./users');
 var localStrategy = require('passport-local');
 const passport = require('passport');
 const postsModel = require('./posts');
-const upload = require('./multer');
+const upload =  require("./multer")
+
 
 passport.use(new localStrategy(userModel.authenticate()));
 
@@ -88,7 +89,10 @@ router.get('/profile', isLoggedIn, async function(req, res, next) {
 router.post('/upload', isLoggedIn, upload.single('image'), async function(req, res, next) {
     try {
         const user = await userModel.findOne({ username: req.session.passport.user });
-        user.profile = req.file.filename;
+        if(! req.file.path){
+            return res.status(400).json({success: false, message: "please provide image path"})
+        }
+        user.profile = req.file.path;
         await user.save();
         res.redirect('/feedpage');
     } catch (error) {
@@ -99,9 +103,12 @@ router.post('/upload', isLoggedIn, upload.single('image'), async function(req, r
 router.post('/postupload', isLoggedIn, upload.single('image'), async(req, res) => {
     try {
         const user = await userModel.findOne({ username: req.session.passport.user });
+        if(! req.file.path){
+            return res.status(400).json({success: false, message: "please provide image path"})
+        }
         const post = await postsModel.create({
             postdata: req.body.caption,
-            postimage: req.file.filename,
+            postimage: req.file.path,
             user: user._id,
         });
         res.redirect('/homepage');
@@ -141,7 +148,10 @@ router.get('/profile/:open', async function(req, res) {
 router.post('/uploadprofile', isLoggedIn, upload.single('picture'), async function(req, res, next) {
     try {
         const user = await userModel.findOne({ username: req.session.passport.user });
-        user.profile = req.file.filename;
+        if(! req.file.path){
+            return res.status(400).json({success: false, message: "please provide image path"})
+        }
+        user.profile = req.file.path;
         await user.save();
         res.redirect('/editprofile');
     } catch (error) {

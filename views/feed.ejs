@@ -17,7 +17,7 @@
             <a href="/logout" class="px-4 py-2 bg-blue-600 text-white rounded-full">Log Out</a>
             <a id="profile" href="/open/profile/<%= userloggedin.username %> ">
                 <div class="profile w-10 h-10 rounded-full overflow-hidden">
-                    <img src="/images/uploads/<%= userloggedin.profile %>" alt="Profile Picture" class="w-full h-full object-cover">
+                    <img src="<%= userloggedin.profile %>" alt="Profile Picture" class="w-full h-full object-cover">
                 </div>
             </a>
         </div>
@@ -31,7 +31,7 @@
 
                 <div class="userdets flex items-center justify-between p-4 border-b">
                     <div class="left flex items-center gap-2">
-                        <img id="userprofile" src="/images/uploads/<%= post.user.profile %>" alt="User Profile" class="w-10 h-10 rounded-full">
+                        <img id="userprofile" src="<%= post.user.profile %>" alt="User Profile" class="w-10 h-10 rounded-full">
                         <a href="/profile/<%= post.user.username %>" class="text-dark no-underline text-gray-800">
                             <%= post.user.username %>
                         </a>
@@ -44,7 +44,7 @@
                             <% } %>
                 </div>
 
-                <img src="/images/uploads/<%= post.postimage %>" class="w-full h-64 object-cover" alt="Post Image">
+                <img src="<%= post.postimage %>" class="w-full h-64 object-cover" alt="Post Image">
 
                 <div class="card-body p-4">
                     <div class="like flex items-center justify-between">
