@@ -1,6 +1,5 @@
-<!doctype html>
+<!-- <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -82,8 +81,244 @@
             });
         });
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html> -->
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.7.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f4f6f9;
+            --text-primary: #2c3e50;
+            --text-secondary: #6c757d;
+            --accent-color: #3498db;
+            --border-color: #e0e4e8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .profile-container {
+            background-color: var(--bg-secondary);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .back-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent-color);
+        }
+
+        .profile-image-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.03);
+        }
+
+        .edit-profile-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 40%;
+            background-color: white;
+            color: var(--accent-color);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--accent-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-profile-btn:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .profile-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-input {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .submit-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 600px) {
+            .profile-container {
+                padding: 1.5rem;
+                margin: 0;
+                width: 100%;
+            }
+
+            .profile-image {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <a href="/profile" class="back-link">
+                <i class="ri-arrow-left-line"></i>
+            </a>
+            <h2>Edit Profile</h2>
+        </div>
+
+        <div class="profile-image-container">
+            <img src="<%= edituser.profile %>" alt="Profile Picture" class="profile-image">
+            <button id="editprofile" class="edit-profile-btn">
+                <i class="ri-camera-line"></i>
+            </button>
+        </div>
+
+        <form id="profileform" hidden action="/uploadprofile" method="post" enctype="multipart/form-data">
+            <input required id="profileupload" type="file" name="picture" accept="image/*">
+        </form>
+
+        <form action="/saveprofile/<%= edituser.username %>" method="post" class="profile-form">
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input required  id="username" name="username" value="<%= edituser.username %>" type="text"
+                    class="form-input" placeholder="Enter your username">
+            </div>
+
+            <div class="form-group">
+                <label for="bio" class="form-label">Bio</label>
+                <textarea required id="bio" name="bio" class="form-input" rows="4"
+                    placeholder="Tell us about yourself"><%= edituser.bio %></textarea>
+            </div>
+            <button type="submit" id="detailsform" class="submit-btn">Save Changes</button>
+        </form>
+    </div>
+
+    <script>
+        let editprofilebutton = document.querySelector("#editprofile");
+        let profileinput = document.querySelector("#profileupload");
+
+
+        editprofilebutton.addEventListener("click", function (event) {
+            profileinput.click();
+            profileinput.addEventListener("change", function (e) {
+                try {
+                    document.querySelector("#profileform").submit();
+                } catch (error) {
+                    res.json({ error: error })
+                }
+            })
+        })
+
+
+
+
+    </script>
 </body>
 
 </html>

@@ -4,7 +4,8 @@ var userModel = require('./users');
 var localStrategy = require('passport-local');
 const passport = require('passport');
 const postsModel = require('./posts');
-const upload =  require("./multer")
+const upload =  require("../multer")
+
 
 
 passport.use(new localStrategy(userModel.authenticate()));
@@ -23,7 +24,6 @@ router.post('/register', async(req, res) => {
 
     if (!username || !fullname || !email) {
         return res.status(401).json({ success: false, message: "Please enter details for create an account" })
-
     }
     try {
         var newuser = new userModel({
@@ -168,17 +168,69 @@ router.get('/editprofile', isLoggedIn, async(req, res) => {
     }
 });
 
-router.post('/saveprofile/:edituser', isLoggedIn, async(req, res) => {
+// router.post('/saveprofile/:edituser', isLoggedIn, async(req, res) => {
+//     try {
+//         const user = await userModel.findOne({ username: req.params.edituser }).populate('posts');
+//         const {username,bio} = req.body;
+//         user.username = username;
+//         user.bio = bio;
+//         await user.save();
+//         res.redirect('/profile');
+//     } catch (error) {
+//         res.status(500).json({ success: false, message: error.message });
+//     }
+// });
+
+router.post('/saveprofile/:edituser', isLoggedIn, async (req, res, next) => {
     try {
         const user = await userModel.findOne({ username: req.params.edituser }).populate('posts');
-        user.username = req.body.newname;
-        user.bio = req.body.bio;
+
+        // Check if user exists
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const { username, bio } = req.body;
+        const usernameChanged = user.username !== username; // Check if username was changed
+
+        // Update user information
+        user.username = username;
+        user.bio = bio;
+
+        // Save updated user information to the database
         await user.save();
-        res.redirect('/profile');
+
+        if (usernameChanged) {
+            // Log the user out to clear the session
+            req.logout((err) => {
+                if (err) {
+                    return next(err);
+                }
+
+                // Find the updated user in the database
+                userModel.findOne({ username: username }, (err, updatedUser) => {
+                    if (err || !updatedUser) {
+                        return res.status(500).json({ success: false, message: 'Error logging in with updated username' });
+                    }
+
+                    // Log the user back in with the updated username
+                    req.login(updatedUser, (err) => {
+                        if (err) {
+                            return next(err);
+                        }
+                        res.redirect('/profile'); // Redirect to profile after re-login
+                    });
+                });
+            });
+        } else {
+            // If the username didn't change, redirect to the profile page
+            res.redirect('/profile');
+        }
     } catch (error) {
-        res.status(500).json({ success: false, message: "Internal Server Error" })
+        res.status(500).json({ success: false, message: 'An error occurred while saving the profile', error: error.message });
     }
 });
+
 
 router.get('/open/profile/:username', isLoggedIn, function(req, res, next) {
     try {
