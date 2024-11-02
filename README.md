@@ -44,7 +44,7 @@ There is no live demo available for the backend API.
 
 3. Create a `.env` file in the root directory and add the following environment variables:
     ```env
-    PORT=5000
+    PORT=3000
     MONGODB_URI=your_mongodb_uri
     SESSION_SECRET=your_session_secret
     ```
