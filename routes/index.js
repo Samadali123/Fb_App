@@ -138,10 +138,11 @@ router.get('/homepage', function(req, res) {
 router.get('/profile/:open', async function(req, res) {
     try {
         const openprofile = await userModel.findOne({ username: req.params.open }).populate('posts');
+        console.log(openprofile)
         const loginuser = await userModel.findOne({ username: req.session.passport.user });
         res.render('openprofile', { openprofile, loginuser });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Internal Server Error" })
+        res.status(500).json({ success: false, message: error.message})
     }
 });
 
@@ -168,18 +169,6 @@ router.get('/editprofile', isLoggedIn, async(req, res) => {
     }
 });
 
-// router.post('/saveprofile/:edituser', isLoggedIn, async(req, res) => {
-//     try {
-//         const user = await userModel.findOne({ username: req.params.edituser }).populate('posts');
-//         const {username,bio} = req.body;
-//         user.username = username;
-//         user.bio = bio;
-//         await user.save();
-//         res.redirect('/profile');
-//     } catch (error) {
-//         res.status(500).json({ success: false, message: error.message });
-//     }
-// });
 
 router.post('/saveprofile/:edituser', isLoggedIn, async (req, res, next) => {
     try {
