@@ -1,4 +1,4 @@
-# Facebook-like Social Media Backend
+# postify web app 
 
 This project is a backend API for a social media application similar to Facebook, built using Express.js, MongoDB, Node.js, and Passport.js for authentication. It includes features for user authentication, authorization, profile management, engaging with users, following/unfollowing, liking posts, and viewing them.
 
